@@ -1,4 +1,4 @@
-cd "/Users/simongreenhill/Documents/orientation/rawdata/"
+cd "/Users/simongreenhill/Dropbox/simon_epic_task/rawdata/"
 use superfund_sample, clear
 
 local price_control "lnmeanhs8"
@@ -39,5 +39,5 @@ estadd local Price "yes", replace
 estadd local House "yes", replace 
 estadd local Economic "yes", replace 
 
-cd "/Users/simongreenhill/Documents/orientation/simon_epic_task/"
+cd "/Users/simongreenhill/Dropbox/simon_epic_task/"
 esttab using issue2_regs.tex, keep(npl2000) label scalars("FE Fixed Effects" "Price Price Controls" "House House Controls" "Economic Economic Controls") replace 

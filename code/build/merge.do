@@ -1,11 +1,38 @@
 * merge all data files on var fips
 
-cd /Users/simongreenhill/Documents/orientation/rawdata/
+cd 
+clear all 
+set more off 
+capture log close 
+
+
+// Set local git directory and local dropbox directory
+if c(username) == "simongreenhill" {
+    global dbdir = "/Users/simongreenhill/Dropbox/simon_epic_task"
+    global gitdir = "/Users/simongreenhill/Documents/simon_epic_task"
+	}
+else if c(username) == "" { // put trin's stuff here 
+    global dbdir = ""
+    global gitdir = ""
+	}
+	
+// Input and output directories
+global outdir = "$dbdir/intermediatedata"
+global codedir = "$gitdir/code"
+global logdir = "$codedir/logs"
+
+// Create a plain text log file to record output
+// Log file has same name as do-file
+* log using "$logdir/merge.txt", replace text
+
 
 * open and save each file as .dta
-local files "demographics house_age1 house_age2 house_chars1 house_chars2 sample82"
+local files "demographics house_age1 house_age2 house_chars1 house_chars2"
 foreach file of local files {
+	pwd
+	cd "$dbdir/rawdata"
 	import delimited `file'.txt, clear
+	cd $dbdir
 	save `file'.dta, replace 
 }
 
@@ -32,4 +59,5 @@ destring statefips, replace
 keep if npl2000 != .
 
 * save
+cd $outdir
 save superfund_sample, replace
