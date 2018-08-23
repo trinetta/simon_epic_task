@@ -27,24 +27,27 @@ global logdir = "$codedir/logs"
 
 
 * open and save each file as .dta
-local files "demographics house_age1 house_age2 house_chars1 house_chars2"
+local files "demographics house_age1 house_age2 house_chars1 house_chars2 sample82"
 foreach file of local files {
 	pwd
 	cd "$dbdir/rawdata"
 	import delimited `file'.txt, clear
-	cd $dbdir
+	cd $outdir
 	save `file'.dta, replace 
 }
 
 * merge files one by one
+cd $outdir
 use demographics, clear
 
-local tomerge "house_age1 house_age2 house_chars1 house_chars2"
+local tomerge "house_age1 house_age2 house_chars1 house_chars2 sample82"
 foreach file of local tomerge{
 	merge 1:1 fips using `file'
-	assert _merge == 3
 	drop _merge 
 }
+
+merge 1:1 fips using sample82
+
 
 * create statefips var
 
@@ -61,3 +64,53 @@ keep if npl2000 != .
 * save
 cd $outdir
 save superfund_sample, replace
+
+* add an hrs dummy and add binned variable (per issue 4) 
+gen hrs = (hrs_82 > 28.5)
+
+gen byte hrs_bin = 2.375 if hrs_82 < 4.75
+
+local i 4.75
+while `i' <= 75 {
+	local j `i'+4.75
+	replace hrs_bin=(`i' + `j')/2 if hrs_82 >= `i' & hrs_82 < `j'
+	local i `j'
+}
+
+* drop and save 
+drop if hrs_bin==.
+cd$outdir
+save superfund_sample_restricted
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
