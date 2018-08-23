@@ -39,7 +39,19 @@ label var povrat8 "Poverty rate"
 label var avhhin8 "Avg. HH income"
 label var occupied80 "% units owner-occupied"
 
-balancetable npl2000 `controls' using issue3_table.tex, replace varlabels  ctitles("Not NPL" "NPL" "Difference") varlabels 
+balancetable npl2000 `controls' using issue3_table.tex, replace  ctitles("Not NPL" "NPL" "Difference") 
+
+cd $outdir
+use superfund_sample_restricted, clear 
+
+cd $TeXdir
+balancetable npl2000 `controls' using  balancetable_HRS.tex, replace  ctitles("HRS < 28.5" "HRS > 28.5" "Difference")  
+
+* balance table for only the cutoff of HRS codes [16.5, 40.5]
+
+keep if hrs_82 > 16.5 & hrs_82 < 40.5
+cd $TeXdir
+balancetable npl2000 `controls' using  balancetable_HRS_cutoff.tex, replace  ctitles("HRS < 28.5" "HRS > 28.5" "Difference")  
 
  /*
 eststo clear
